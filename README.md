@@ -197,3 +197,30 @@ Now load `/friends` and, just like that, they'll be there for you!
 ![friends couch](http://i.giphy.com/woCi8k482YTEQ.gif)
 
 <p data-visibility='hidden'>View <a href='https://learn.co/lessons/web-auth-readme' title='Using OAuth with APIs'>Using OAuth with APIs</a> on Learn.co and start learning to code for free.</p>
+
+1. Application_controller
+    def logged_in?
+      !!session[:token]
+    end
+
+2. gem 'dotenv-rails'
+3. .gitignore -
+    FOURSQUARE_CLIENT_ID
+    FOURSQUARE_SECRET
+4. application_controller
+  def authenticate_user
+   client_id = ENV['FOURSQUARE_CLIENT_ID']
+   redirect_uri = CGI.escape("http://localhost:3000/auth")
+       foursquare_url = "https://foursquare.com/oauth2/authenticate?client_id=#{client_id}&response_type=code&redirect_uri=#{redirect_uri}"
+   redirect_to foursquare_url unless logged_in?
+  end
+5. application_controller
+  before_action :authenticate_user
+6. sessions_controller
+  skip_before_action :authenticate_user, only: :create
+* Foursquare Message:
+    Sorry! We're having technical difficulties.
+    Check status.foursquare.com for the latest.
+7. If it were working, you now have to set up the get-route, in config/routes.rb
+    get '/auth', to: 'sessions#create'
+8. 
